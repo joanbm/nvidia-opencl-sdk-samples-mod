@@ -1,0 +1,11 @@
+Overview of the situation:
+* NVIDIA's official site has some official samples to download:
+  -> https://developer.nvidia.com/opencl
+* However, those are "itemized" and missing some files. But they can be built anyway with some effort:
+  -> If exception.h is missing: https://raw.githubusercontent.com/NVIDIA/cuda-samples/master/Common/exception.h
+  -> Sample build: g++ src/oclBandwidthTest/oclBandwidthTest.cpp ../shared/src/shrUtils.cpp ../shared/src/cmd_arg_reader.cpp common/src/oclUtils.cpp -I common/inc/ -I ../shared/inc/ -lOpenCL -DUNIX
+* More practical is this post, which points to some alternatives:
+  -> https://devtalk.nvidia.com/default/topic/527813/opencl-example-makefile-not-found-for-libshrutil_x86-build/
+* Using https://streamcomputing.eu/downloads/?Nvidia_OpenCL_SDK_4_2_Linux.zip seems to be best
+  However some slight fixes are still required (see Dockerfile)
+
