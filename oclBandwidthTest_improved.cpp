@@ -1140,7 +1140,7 @@ void printHelp(void)
     shrLog("  zeros                  - all zeros\n");
     shrLog("  period8                - 8-byte periodic pattern\n");
     shrLog("  period256              - 256-byte periodic pattern\n");
-    shrLog("  filedata              - file data pattern (from 'data.bin')\n");
+    shrLog("  filedata               - file data pattern (from 'data.bin')\n");
     shrLog("  pseudorandomwords      - pseudorandom words\n");
     shrLog("  pseudorandomsmallrange - pseudorandom data (small range)\n");
     shrLog("  pseudorandom           - pseudorandom data\n");
