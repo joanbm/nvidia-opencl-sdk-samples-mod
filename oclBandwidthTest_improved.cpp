@@ -50,7 +50,7 @@ enum memcpyKind { DEVICE_TO_HOST, HOST_TO_DEVICE, DEVICE_TO_DEVICE };
 enum printMode { USER_READABLE, CSV };
 enum memoryMode { PAGEABLE, PINNED };
 enum accessMode { MAPPED, DIRECT };
-enum patternKind { ZEROS, PERIOD8, PERIOD256, FILEDATA, PSEUDORANDOMWORDS, PSEUDORANDOMSMALLRANGE, PSEUDORANDOM };
+enum patternKind { ZEROS, PERIOD8, PERIOD11, PERIOD256, PERIOD2053, FILEDATA, PSEUDORANDOMWORDS, PSEUDORANDOMSMALLRANGE, PSEUDORANDOM };
 
 // CL objects
 cl_context cxGPUContext;
@@ -102,10 +102,23 @@ static void patternFill(unsigned char *data, size_t size, patternKind pattKind) 
             data[i] = (unsigned char) (i & 0x7);
         }
     }
+    else if (pattKind == PERIOD11)
+    {
+        for(size_t i = 0; i < size/sizeof(unsigned char); i++) {
+            data[i] = (unsigned char) (i % 11);
+        }
+    }
     else if (pattKind == PERIOD256)
     {
         for(size_t i = 0; i < size/sizeof(unsigned char); i++) {
             data[i] = (unsigned char) (i & 0xff);
+        }
+    }
+    else if (pattKind == PERIOD2053) {
+        for(size_t i = 0, p = 1;
+            i < size/sizeof(unsigned char);
+            i++, p = (p * 2) % 2053) /* 2 is a primitive root modulo 2053 */ {
+            data[i++] = (unsigned char) (p);
         }
     }
     else if (pattKind == FILEDATA)
@@ -250,9 +263,17 @@ int runTest(const int argc, const char **argv)
         {
             pattKind = PERIOD8;
         }
+        else if(strcmp(memModeStr, "period11") == 0)
+        {
+            pattKind = PERIOD11;
+        }
         else if(strcmp(memModeStr, "period256") == 0)
         {
             pattKind = PERIOD256;
+        }
+        else if(strcmp(memModeStr, "period2053") == 0)
+        {
+            pattKind = PERIOD2053;
         }
         else if(strcmp(memModeStr, "filedata") == 0)
         {
@@ -272,7 +293,7 @@ int runTest(const int argc, const char **argv)
         }
         else
         {
-            shrLog("Invalid memory pattern - valid modes are zeros, period8, period256, filedata, pseudorandomwords, pseudorandomsmallrange, pseudorandom\n");
+            shrLog("Invalid memory pattern - valid modes are zeros, period8, period11, period256, period2053, filedata, pseudorandomwords, pseudorandomsmallrange, pseudorandom\n");
             shrLog("See --help for more information\n");
             return -1000;
         }
@@ -983,9 +1004,17 @@ void printResultsReadable(unsigned int *memSizes, double* bandwidths, unsigned i
     {
         shrLog(", 8-byte periodic pattern");
     }
+    else if (pattKind == PERIOD11)
+    {
+        shrLog(", 11-byte periodic pattern");
+    }
     else if (pattKind == PERIOD256)
     {
         shrLog(", 256-byte periodic pattern");
+    }
+    else if (pattKind == PERIOD2053)
+    {
+        shrLog(", 2053-byte periodic pattern");
     }
     else if (pattKind == FILEDATA)
     {
@@ -1071,9 +1100,17 @@ void printResultsCSV(unsigned int *memSizes, double* bandwidths, unsigned int co
     {
         sConfig += "-Period8";
     }
+    else if (pattKind == PERIOD11)
+    {
+        sConfig += "-Period11";
+    }
     else if (pattKind == PERIOD256)
     {
         sConfig += "-Period256";
+    }
+    else if (pattKind == PERIOD2053)
+    {
+        sConfig += "-Period2053";
     }
     else if (pattKind == FILEDATA)
     {
@@ -1139,7 +1176,9 @@ void printHelp(void)
     shrLog("--pattern=[PATTKIND]\tSpecify which memory pattern to use\n");
     shrLog("  zeros                  - all zeros\n");
     shrLog("  period8                - 8-byte periodic pattern\n");
+    shrLog("  period8                - 11-byte periodic pattern\n");
     shrLog("  period256              - 256-byte periodic pattern\n");
+    shrLog("  period2053             - 2053-byte periodic pattern\n");
     shrLog("  filedata               - file data pattern (from 'data.bin')\n");
     shrLog("  pseudorandomwords      - pseudorandom words\n");
     shrLog("  pseudorandomsmallrange - pseudorandom data (small range)\n");
