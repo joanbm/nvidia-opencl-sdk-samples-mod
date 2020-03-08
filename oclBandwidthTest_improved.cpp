@@ -1075,7 +1075,7 @@ void printResultsCSV(unsigned int *memSizes, double* bandwidths, unsigned int co
     {
         sConfig += "-Period256";
     }
-    else if (pattKind == PERIOD256)
+    else if (pattKind == FILEDATA)
     {
         sConfig += "-FileData";
     }
