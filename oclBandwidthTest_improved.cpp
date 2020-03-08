@@ -1176,7 +1176,7 @@ void printHelp(void)
     shrLog("--pattern=[PATTKIND]\tSpecify which memory pattern to use\n");
     shrLog("  zeros                  - all zeros\n");
     shrLog("  period8                - 8-byte periodic pattern\n");
-    shrLog("  period8                - 11-byte periodic pattern\n");
+    shrLog("  period11               - 11-byte periodic pattern\n");
     shrLog("  period256              - 256-byte periodic pattern\n");
     shrLog("  period2053             - 2053-byte periodic pattern\n");
     shrLog("  filedata               - file data pattern (from 'data.bin')\n");
