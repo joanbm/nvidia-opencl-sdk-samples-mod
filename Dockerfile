@@ -1,4 +1,4 @@
-FROM nvidia/opencl
+FROM nvidia/opencl:devel-ubuntu18.04
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -11,6 +11,7 @@ RUN wget "https://streamcomputing.eu/downloads/?Nvidia_OpenCL_SDK_4_2_Linux.zip"
  && unzip Nvidia_OpenCL_SDK_4_2_Linux.zip -d Nvidia_OpenCL_SDK_4_2_Linux
 
 WORKDIR /Nvidia_OpenCL_SDK_4_2_Linux
+COPY oclBandwidthTest_improved.cpp OpenCL/src/oclBandwidthTest/oclBandwidthTest.cpp
 
 # Fix 1: The ZIP includes some pre-built objects and libraries, and also
 #        some headers which should be provided by the system
@@ -21,3 +22,4 @@ RUN rm -Rf shared/inc/GL OpenCL/common/inc/CL shared/lib shared/obj \
  && make -j$(nproc) -C OpenCL
 
 WORKDIR OpenCL/bin/linux/release
+CMD ./oclBandwidthTest --help
